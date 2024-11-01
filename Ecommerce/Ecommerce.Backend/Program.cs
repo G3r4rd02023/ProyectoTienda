@@ -1,3 +1,5 @@
+using Ecommerce.Backend.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Backend
 {
@@ -10,6 +12,11 @@ namespace Ecommerce.Backend
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<DataContext>(o =>
+            {
+                o.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL"));
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -24,9 +31,7 @@ namespace Ecommerce.Backend
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
 
             app.MapControllers();
 
