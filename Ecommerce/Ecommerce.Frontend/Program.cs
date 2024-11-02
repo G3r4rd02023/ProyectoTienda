@@ -1,3 +1,7 @@
+using CloudinaryDotNet;
+using Ecommerce.Frontend.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 namespace Ecommerce.Frontend
 {
     public class Program
@@ -8,6 +12,25 @@ namespace Ecommerce.Frontend
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IServicioUsuario, ServicioUsuario>();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+              .AddCookie(options =>
+              {
+                  options.LoginPath = "/Account/Login";
+                  options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+              });
+
+            var cloudinaryConfig = builder.Configuration.GetSection("Cloudinary");
+
+            var cloudinary = new Cloudinary(new Account(
+            cloudinaryConfig["CloudName"],
+            cloudinaryConfig["ApiKey"],
+            cloudinaryConfig["ApiSecret"]
+            ));
+
+            builder.Services.AddSingleton(cloudinary);
 
             var app = builder.Build();
 
@@ -23,12 +46,12 @@ namespace Ecommerce.Frontend
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
 
             app.Run();
         }

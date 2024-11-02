@@ -89,5 +89,19 @@ namespace Ecommerce.Backend.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpGet("email/{email}")]
+        public async Task<IActionResult> GetByEmailAsync(string email)
+        {
+            var usuario = await _context.Usuarios
+                .SingleOrDefaultAsync(u => u.Correo == email);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(usuario);
+        }
     }
 }

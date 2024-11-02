@@ -1,0 +1,81 @@
+﻿@model Ecommerce.Shared.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<html>
+    <head>
+    <style>
+        body {
+            background-image: url('/images/bgtienda.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width" />
+    <title>Iniciar Sesion</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.zephyr.min.css" />
+    </head>
+    <body>
+        <div class="container mt-5 pt-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-xl-4 col-md-6">
+                    <div class="card bg-primary text-white">
+                        <div class="card-header d-flex justify-content-center">
+                            <img src="/images/logotienda.png" style="width: 150px; height: auto; border-radius:150px" />
+                        </div>  
+                        <div class="card-body">
+                            <form asp-controller="Account" asp-action="Login" method="post">
+                            <input asp-for="CorreoElectronico" class="form-control mb-3" type="text" placeholder="Usuario" />
+                            <input asp-for="Contrasena" class="form-control mb-3" type="password" placeholder="Contraseña" />
+                            <div class="d-grid gap-2 mb-3">
+                                <button class="btn btn-info" type="submit">Iniciar Sesion</button>
+                            </div>                            
+                            ¿No tienes una cuenta? <a href="@Url.Action("Registro","Account")" class="text-white"> Registraste!</a>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            Swal.fire({
+                title: 'Error',
+                text: '@ViewData["ErrorMessage"]',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script type="text/javascript">
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '@TempData["SuccessMessage"]',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true
+        });
+    </script>
+}

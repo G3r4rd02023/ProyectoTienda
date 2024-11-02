@@ -32,8 +32,12 @@ namespace Ecommerce.Backend.Controllers
             {
                 if (BCrypt.Net.BCrypt.Verify(login.Contrasena, usuario.Contrasena))
                 {
-                    return Ok(new { Message = "Inicio de sesión exitoso.", isSuccess = true });
+                    return Ok(new { Message = "Inicio de sesión exitoso.", isSuccess = true, isNewUser = usuario.Estado });
                 }
+            }
+            else if (usuario!.Estado == "Nuevo")
+            {
+                return Conflict(new { Message = "Inicio de sesión fallido. El usuario es nuevo pero aún no está activo.", isSuccess = false });
             }
 
             return Unauthorized(new { Message = "Inicio de sesión fallido. Usuario o contraseña incorrectos.", isSuccess = false, token = "" });

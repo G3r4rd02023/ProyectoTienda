@@ -1,0 +1,74 @@
+﻿@model Ecommerce.Shared.Entities.Usuario
+@{
+    ViewData["Title"] = "Registro";
+    Layout = "~/Views/Shared/ModalLayout.cshtml";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<html>
+    <head>
+    <style>
+        body {
+            background-image: url('/images/bgtienda.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width" />
+    <title>Registrarse</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.flatly.min.css" />
+    </head>
+    <body>
+    <div class="container mt-5 pt-5">
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-6 col-md-6">
+
+                <div class="card bg-primary">
+                    <div class="card-header d-flex justify-content-center">
+                        <img src="/images/logotienda.png" style="width: 100px; height: auto; border-radius:50px" />
+                    </div>
+                    <div class="card-body text-white">
+
+                        <form asp-controller="Account" asp-action="Registro" method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="Rol" />
+                            <input type="hidden" asp-for="Estado" />
+                            <input type="hidden" asp-for="SesionActiva" />
+                            <input class="form-control mb-3" type="text" placeholder="DNI" asp-for="DNI" required />
+                            <input class="form-control mb-3" type="text" placeholder="Nombre" asp-for="Nombre" required />
+                            <input class="form-control mb-3" type="text" placeholder="Correo" asp-for="Correo" required />
+                            <input class="form-control mb-3" type="password" placeholder="Contraseña" asp-for="Contrasena" required />
+                            <input class="form-control mb-3" type="text" placeholder="Dirección" asp-for="Direccion" required />
+                            <input class="form-control mb-3" type="text" placeholder="Telefono" asp-for="Telefono" required />
+                            <div class="form-group">
+                                <input type="file" class="form-control mb-3" name="file" asp-for="URLFoto">
+                            </div>
+
+                            <div class="d-grid gap-2 mb-3">
+                                <button class="btn btn-info" type="submit">Registrarse</button>
+                            </div>
+
+                            ¿Ya tienes una cuenta? <a href="@Url.Action("Login", "Account")" class="text-info text-white"> Iniciar Sesión</a>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+
