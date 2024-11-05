@@ -82,7 +82,7 @@ namespace Ecommerce.Frontend.Controllers
                 var response = await _httpClient.PostAsync("/api/Productos/", content);
                 if (response.IsSuccessStatusCode)
                 {
-                    TempData["SuccessMessage"] = "El producto " + producto.Nombre + "se ha creado exitosamente";
+                    TempData["SuccessMessage"] = "El producto " + producto.Nombre + " se ha creado exitosamente";
                     return RedirectToAction("Index", "Productos");
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
@@ -98,6 +98,90 @@ namespace Ecommerce.Frontend.Controllers
             }
             producto.Categorias = await _lista.GetListaCategorias();
             return View(producto);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/Productos/{id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Error al obtener el producto.";
+                return RedirectToAction("Index");
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            var producto = JsonConvert.DeserializeObject<ProductoDTO>(content);
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            producto.Categorias = await _lista.GetListaCategorias();
+            return View(producto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(ProductoDTO producto, IFormFile? file)
+        {
+            if (ModelState.IsValid)
+            {
+                if (file != null)
+                {
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, file.OpenReadStream()),
+                        AssetFolder = "tecnologers"
+                    };
+
+                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+                    if (uploadResult.Error != null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Error al cargar la imagen.");
+                        return View(producto);
+                    }
+
+                    var urlImagen = uploadResult.SecureUrl.ToString();
+                    producto.URLFoto = urlImagen;
+                }
+                else
+                {
+                    var productoResponse = await _httpClient.GetAsync($"/api/Productos/{producto.Id}");
+                    var productoContent = await productoResponse.Content.ReadAsStringAsync();
+                    var productoExistente = JsonConvert.DeserializeObject<ProductoDTO>(productoContent);
+                    producto.URLFoto = productoExistente!.URLFoto;
+                }
+                var json = JsonConvert.SerializeObject(producto);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsync($"/api/Productos/{producto.Id}", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["SuccessMessage"] = "El producto se ha actualizado exitosamente";
+                    return RedirectToAction("Index", "Productos");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Error al editar el producto!!!";
+                    return RedirectToAction("Index", "Productos");
+                }
+            }
+            return View(producto);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/Productos/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Producto eliminado exitosamente!!!";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["Error"] = "Error al eliminar el producto.";
+                return RedirectToAction("Index");
+            }
         }
     }
 }

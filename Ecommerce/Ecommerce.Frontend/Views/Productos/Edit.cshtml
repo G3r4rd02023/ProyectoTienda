@@ -1,0 +1,74 @@
+﻿@model Ecommerce.Frontend.Models.ProductoDTO
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/ModalLayout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header text-center">
+            <img src="/images/logotienda.png" style="width: 100px; height: auto; border-radius:50px" />
+        </div>
+        <div class="card-body text-success">
+            <h5>Editar Producto </h5>
+            <form asp-controller="Productos" asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>               
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Categorias" />
+
+                <div class="form-group">
+                    <input asp-for="Codigo" class="form-control" readonly />
+                    <span asp-validation-for="Codigo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Nombre" class="form-control" placeholder="Nombre" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Precio" class="form-control" placeholder="Precio" />
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Stock" class="form-control" placeholder="Stock" />
+                    <span asp-validation-for="Stock" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción"></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="file" class="form-control mb-3" name="file" asp-for="URLFoto">
+                </div>
+
+                <div class="form-group">
+                    <label></label>
+                    <select asp-for="CategoriaId" asp-items="Model.Categorias" class="form-control"></select>
+                    <span asp-validation-for="CategoriaId" class="text-danger"></span>
+                </div>
+
+                <div class="card-footer text-center">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <i class="oi oi-check"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">
+                            <i class="oi oi-arrow-thick-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
