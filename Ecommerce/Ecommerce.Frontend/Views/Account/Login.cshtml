@@ -51,13 +51,13 @@
     </body>
 </html>
 
-@if (ViewData["ErrorMessage"] != null)
+@if (TempData["ErrorMessage"] != null)
 {
     <script>
         document.addEventListener("DOMContentLoaded", function (event) {
             Swal.fire({
                 title: 'Error',
-                text: '@ViewData["ErrorMessage"]',
+                text: '@TempData["ErrorMessage"]',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });

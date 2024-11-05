@@ -16,7 +16,7 @@
             icon: 'success',
             title: '@TempData["SuccessMessage"]',
             showConfirmButton: false,
-            timer: 5000,
+            timer: 3000,
             timerProgressBar: true
         });
     </script>
@@ -68,7 +68,9 @@
                                 <td class="text-danger"><strong>@Html.DisplayFor(modelItem => item.Estado)</strong></td>
                             }
                             <td>
-                                <button data-id="@item.Id" class="btn btn-outline-danger btn-sm deleteItem">
+                                <a onclick="showInPopup('@Url.Action("Access", "Usuarios", new { id = item.Id }, Context.Request.Scheme)' ,
+                    '')" class="btn btn-warning btn-sm"><i class="oi oi-pencil"></i> </a>
+                                <button data-id="@item.Id" class="btn btn-danger btn-sm deleteItem">
                                     <i class="oi oi-trash"></i>
                                 </button>
                             </td>

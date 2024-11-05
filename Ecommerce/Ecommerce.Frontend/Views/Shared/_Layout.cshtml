@@ -55,8 +55,8 @@
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-white-50" asp-area="" asp-controller="Account"
-                                       asp-action="ChangeUser"><span class="oi oi-box-arrow-left"></span><strong>  Hola! @User.Identity.Name</strong></a>
+                                    <a class="nav-link text-white-50" asp-area="" asp-controller="Usuarios"
+                                       asp-action="Edit"><span class="oi oi-box-arrow-left"></span><strong>  Hola! @User.Identity.Name</strong></a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-white-50" asp-area="" asp-controller="Account" asp-action="Logout">

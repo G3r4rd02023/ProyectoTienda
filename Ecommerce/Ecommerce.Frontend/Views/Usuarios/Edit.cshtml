@@ -1,0 +1,70 @@
+﻿@model Ecommerce.Shared.Models.EditUserViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/ModalLayout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script type="text/javascript">
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '@TempData["SuccessMessage"]',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    </script>
+}
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header text-center">
+            <img src="/images/logotienda.png" style="width: 100px; height: auto; border-radius:50px" />
+        </div>
+        <div class="card-body text-success">
+            <h5>Editar Usuario </h5>
+            <form asp-controller="Usuarios" asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>                
+                <input type="hidden" asp-for="Id"/>
+                <div class="form-group">
+                    <input asp-for="Nombre" class="form-control" placeholder="Nombre" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="DNI" class="form-control" placeholder="DNI" />
+                    <span asp-validation-for="DNI" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Direccion" class="form-control" placeholder="Direccion" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Telefono" class="form-control" placeholder="Telefono" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="file" class="form-control mb-3" name="file" asp-for="URLFoto">
+                </div>
+                <div class="card-footer text-center">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            Guardar Cambios
+                        </button>
+                        <a asp-action="CambiarPassword" class="btn btn-sm btn-primary">Cambiar Contraseña</a>
+                        <a asp-action="RecoverPassword" class="btn btn-sm btn-info">Recuperar Contraseña</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

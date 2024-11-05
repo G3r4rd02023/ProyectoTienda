@@ -27,6 +27,7 @@ namespace Ecommerce.Backend.Controllers
         {
             try
             {
+                usuario.Contrasena = BCrypt.Net.BCrypt.HashPassword(usuario.Contrasena);
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return Ok();
