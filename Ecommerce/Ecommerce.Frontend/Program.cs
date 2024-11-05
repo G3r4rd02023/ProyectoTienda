@@ -14,6 +14,8 @@ namespace Ecommerce.Frontend
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IServicioUsuario, ServicioUsuario>();
+            builder.Services.AddScoped<IServicioProducto, ServicioProducto>();
+            builder.Services.AddScoped<IServicioLista, ServicioLista>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
               .AddCookie(options =>

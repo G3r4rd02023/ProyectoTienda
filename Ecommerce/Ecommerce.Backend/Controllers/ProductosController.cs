@@ -20,7 +20,9 @@ namespace Ecommerce.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            return Ok(await _context.Productos.ToListAsync());
+            return Ok(await _context.Productos
+                .Include(p => p.Categoria)
+                .ToListAsync());
         }
 
         [HttpPost]

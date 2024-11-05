@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Ecommerce.Shared.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace Ecommerce.Frontend.Services
 {
@@ -12,9 +14,28 @@ namespace Ecommerce.Frontend.Services
             _httpClient.BaseAddress = new Uri("https://localhost:7102/");
         }
 
-        public Task<IEnumerable<SelectListItem>> GetListaRoles()
+        public async Task<IEnumerable<SelectListItem>> GetListaCategorias()
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync("/api/Categorias");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var categorias = JsonConvert.DeserializeObject<IEnumerable<Categoria>>(content);
+                var lista = categorias!.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Nombre
+                }).ToList();
+
+                lista.Insert(0, new SelectListItem
+                {
+                    Value = "",
+                    Text = "Seleccione la categoria"
+                });
+                return lista;
+            }
+
+            return [];
         }
     }
 }
