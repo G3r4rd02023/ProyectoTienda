@@ -33,6 +33,10 @@ namespace Ecommerce.Backend.Controllers
             }
             catch (DbUpdateException ex)
             {
+                if (ex.InnerException!.Message.Contains("duplicate"))
+                {
+                    return Conflict(new { Message = "Ya existe una categoria con ese nombre", isSuccess = false });
+                }
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.InnerException!.Message);
             }
             catch (Exception ex)
@@ -69,6 +73,10 @@ namespace Ecommerce.Backend.Controllers
             }
             catch (DbUpdateException ex)
             {
+                if (ex.InnerException!.Message.Contains("duplicate"))
+                {
+                    return Conflict(new { Message = "Ya existe una categoria con ese nombre", isSuccess = false });
+                }
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.InnerException!.Message);
             }
             catch (Exception ex)

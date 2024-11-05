@@ -17,6 +17,23 @@ namespace Ecommerce.Backend.Data
         {
             await _context.Database.EnsureCreatedAsync();
             await ValidarUsuariosAsync("Tecnologers", "tecnologershn@gmail.com", "123456", Rol.Administrador);
+            await CrearCategoriasAsync();
+        }
+
+        private async Task CrearCategoriasAsync()
+        {
+            if (!_context.Categorias.Any())
+            {
+                _context.Categorias.Add(new Categoria { Nombre = "Tecnología" });
+                _context.Categorias.Add(new Categoria { Nombre = "Ropa" });
+                _context.Categorias.Add(new Categoria { Nombre = "Gamer" });
+                _context.Categorias.Add(new Categoria { Nombre = "Nutricion" });
+                _context.Categorias.Add(new Categoria { Nombre = "Belleza" });
+                _context.Categorias.Add(new Categoria { Nombre = "Deportes" });
+                _context.Categorias.Add(new Categoria { Nombre = "Hogar" });
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         private async Task<Usuario> ValidarUsuariosAsync(string nombre, string correo, string pass, Rol rol)
