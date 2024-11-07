@@ -1,6 +1,5 @@
 using Ecommerce.Frontend.Models;
 using Ecommerce.Frontend.Services;
-using Ecommerce.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -20,16 +19,32 @@ namespace Ecommerce.Frontend.Controllers
             _usuario = usuario;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchName, int? categoryId, int pageNumber = 1, int pageSize = 12)
         {
             var productos = await _producto.ObtenerProductosAsync();
             var categorias = await _producto.ObtenerCategoriasAsync();
 
-            // Crear el modelo y paginar productos
+            if (!string.IsNullOrWhiteSpace(searchName))
+            {
+                productos = productos.Where(p => p.Nombre.Contains(searchName, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (categoryId.HasValue)
+            {
+                productos = productos.Where(p => p.CategoriaId == categoryId.Value).ToList();
+            }
+
+            int totalItems = productos.Count();
+            var pagedProductos = productos.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
             HomeViewModel model = new()
             {
-                Productos = productos.ToList(),
-                Categorias = categorias.ToList()
+                Productos = pagedProductos,
+                Categorias = categorias.ToList(),
+                SearchName = searchName,
+                SelectedCategoryId = categoryId,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = totalItems
             };
 
             return View(model);

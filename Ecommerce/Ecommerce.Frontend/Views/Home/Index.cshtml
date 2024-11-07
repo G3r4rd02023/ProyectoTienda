@@ -32,6 +32,17 @@
 </div> 
 
 
+<form method="get" asp-action="Index" id="searchForm">
+    <div class="card col-md-3 bg-info p-2">
+        <div class="d-flex">
+            <input type="text" name="searchName" value="@Model.SearchName" placeholder="Buscar por nombre..." class="form-control me-2" oninput="submitForm()" />
+            <button type="submit" class="btn btn-primary"><i class="oi oi-magnifying-glass"></i></button>
+        </div>
+    </div>
+</form>
+
+<hr />
+
 @if (Model.Cantidad > 0)
 {
     <a onclick="showInPopup('@Url.Action("VerCarrito", "Home", Context.Request.Scheme)' ,
@@ -74,6 +85,23 @@
 </div>
 
 
+<div class="card col-md-3 bg-info p-2">
+    <nav aria-label="Product pagination">
+        <ul class="pagination justify-content-center mb-0">
+            @for (int i = 1; i <= Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-searchName="@Model.SearchName"
+                       asp-route-categoryId="@Model.SelectedCategoryId">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+
 <style type="text/css">
     .card {
         display: flex;
@@ -85,4 +113,25 @@
         font-family: sans-serif;
         margin: 5px;
     }
+
+    .zoom {
+        padding: 5px;
+        background-color: transparent;
+        transition: transform .2s;
+        width: auto;
+        height: auto;
+        margin: 0 auto;
+    }
+
+    .zoom:hover {
+        -ms-transform: scale(2); /* IE 9 */
+        -webkit-transform: scale(2); /* Safari 3-8 */
+        transform: scale(2);
+    }
 </style>
+
+<script>
+    function submitForm() {
+        document.getElementById('searchForm').submit();
+    }
+</script>
