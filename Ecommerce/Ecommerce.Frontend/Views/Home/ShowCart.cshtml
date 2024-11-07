@@ -1,0 +1,148 @@
+﻿@model Ecommerce.Frontend.Models.CartViewModel
+@{
+    ViewData["Title"] = "ShowCart";
+    Layout = "~/Views/Shared/ModalLayout.cshtml";
+}
+
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div class="row">
+    <div class=" col-md-12">
+        <div class=" card"> 
+            <div class=" card-header bg-success text-white ">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.Cantidad)
+                        </dt>
+                        <dd class="col-sm-7">
+                            <h3>@Html.DisplayFor(model => model.Cantidad)</h3>
+                        </dd>
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.Total)
+                        </dt>
+                        <dd class="col-sm-7">
+                            <h3>@Html.DisplayFor(model => model.Total)</h3>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="card-body">
+            <div class="col-md-12">
+                <form asp-action="ShowCart">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group form-control"> 
+                        <label></label>
+                        <textarea asp-for="Comentario" class="form-control" placeholder="Comentario"></textarea>
+                        <span asp-validation-for="Comentario" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mt-2 text-center">
+                        <button type="submit" class="btn-lg btn btn-success">
+                            <span class="oi oi-check" title="Confirmar Pedido" aria-hidden="true"></span> Confirmar Pedido
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info">
+                <h3 class="card-title text-center text-white"><i class="oi oi-cart"></i></h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover table-responsive table-striped" id="cart">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.VentasTemporales!.FirstOrDefault()!.Producto!.URLFoto)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.VentasTemporales!.FirstOrDefault()!.Producto!.Nombre)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.VentasTemporales!.FirstOrDefault()!.Producto!.Precio)
+                            </th>
+                           
+                            <th>
+                                @Html.DisplayNameFor(model => model.VentasTemporales!.FirstOrDefault()!.Cantidad)
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.VentasTemporales!.FirstOrDefault()!.Total)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.VentasTemporales!)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="zoom">
+                                        <img src="@item.Producto!.URLFoto" style="width:100px; border-radius: 100px" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <strong>@Html.DisplayFor(modelItem => item.Producto!.Nombre)</strong>
+                                </td>
+
+                                <td>
+                                    <strong>@Html.DisplayFor(modelItem => item.Producto!.Precio)</strong>
+                                </td>
+                                <td>
+                                    <strong>@Html.DisplayFor(modelItem => item.Cantidad)</strong>
+                                </td>
+                                <td>
+                                    <a onclick="showInPopup('@Url.Action("Disminuir", "Home", new { id =item.Id }, Context.Request.Scheme)' ,
+                    '')" class="btn btn-danger"><i class="oi oi-minus"></i></a>
+                                </td>                               
+                                <td>
+                                    <a onclick="showInPopup('@Url.Action("Incrementar", "Home", new { id =item.Id }, Context.Request.Scheme)' ,
+                    '')" class="btn btn-success"><i class="oi oi-plus"></i></a>
+                                </td>
+                                <td>
+                                    <strong>@Html.DisplayFor(modelItem => item.Total)</strong>
+                                </td>
+                                <td>
+                                    <a onclick="showInPopup('@Url.Action("Delete", "Home", new { id =item.Id }, Context.Request.Scheme)' ,
+                    '')" class="btn btn-danger"><i class=" oi oi-trash"></i></a>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="~/js/showmodal.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#cart').DataTable(
+                {
+                    "language": {
+                        url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+                    },
+
+                });
+        });
+    </script>
+}

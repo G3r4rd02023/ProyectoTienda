@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Frontend.Models;
 using Ecommerce.Shared.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -52,15 +53,31 @@ namespace Ecommerce.Frontend.Services
             return [];
         }
 
-        public async Task<IQueryable<Producto>> QueryProductosAsync()
+        public async Task<ProductoDTO?> BuscarProductoAsync(int id)
         {
-            var response = await _httpClient.GetAsync("/api/Productos/Query");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<Producto>>(content)!.AsQueryable();
+                var response = await _httpClient.GetAsync($"/api/Productos/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var producto = JsonConvert.DeserializeObject<ProductoDTO>(content);
+                    return producto;
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                }
             }
-            return Enumerable.Empty<Producto>().AsQueryable();
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Request error: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON parsing error: {ex.Message}");
+            }
+            return null;
         }
     }
 }

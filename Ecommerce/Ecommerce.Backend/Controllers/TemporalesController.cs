@@ -30,6 +30,10 @@ namespace Ecommerce.Backend.Controllers
         {
             try
             {
+                var producto = _context.Productos.FirstOrDefault(p => p.Id == temporal.Producto!.Id);
+                var usuario = _context.Usuarios.FirstOrDefault(p => p.Id == temporal.Usuario!.Id);
+                temporal.Usuario = usuario;
+                temporal.Producto = producto;
                 _context.Add(temporal);
                 await _context.SaveChangesAsync();
                 return Ok();

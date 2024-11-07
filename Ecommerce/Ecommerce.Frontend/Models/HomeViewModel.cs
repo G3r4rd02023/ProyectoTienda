@@ -10,7 +10,7 @@ namespace Ecommerce.Frontend.Models
         public ICollection<Producto>? Productos { get; set; }
 
         public ICollection<Categoria>? Categorias { get; set; }
-
+        public Usuario? Usuario { get; set; }
         public string? SearchName { get; set; }
         public int? SelectedCategoryId { get; set; }
         public int PageNumber { get; set; }

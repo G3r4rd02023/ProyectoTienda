@@ -1,7 +1,7 @@
 using Ecommerce.Frontend.Models;
 using Ecommerce.Frontend.Services;
+using Ecommerce.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace Ecommerce.Frontend.Controllers
@@ -11,19 +11,22 @@ namespace Ecommerce.Frontend.Controllers
         private readonly HttpClient _httpClient;
         private readonly IServicioProducto _producto;
         private readonly IServicioUsuario _usuario;
+        private readonly IServicioVenta _venta;
 
-        public HomeController(IHttpClientFactory httpClientFactory, IServicioProducto producto, IServicioUsuario usuario)
+        public HomeController(IHttpClientFactory httpClientFactory, IServicioProducto producto, IServicioUsuario usuario, IServicioVenta venta)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7102/");
             _producto = producto;
             _usuario = usuario;
+            _venta = venta;
         }
 
         public async Task<IActionResult> Index(string searchName, int? categoryId, int pageNumber = 1, int pageSize = 12)
         {
             var productos = await _producto.ObtenerProductosAsync();
             var categorias = await _producto.ObtenerCategoriasAsync();
+            var usuario = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
 
             if (!string.IsNullOrWhiteSpace(searchName))
             {
@@ -41,6 +44,8 @@ namespace Ecommerce.Frontend.Controllers
             {
                 Productos = pagedProductos,
                 Categorias = categorias.ToList(),
+                Cantidad = await _venta.ObtenerCantidad(User.Identity!.Name!),
+                Usuario = usuario,
                 SearchName = searchName,
                 SelectedCategoryId = categoryId,
                 PageNumber = pageNumber,
@@ -51,21 +56,52 @@ namespace Ecommerce.Frontend.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Detalles(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
+            var producto = await _producto.BuscarProductoAsync(id);
+            return View(producto);
+        }
+
+        public async Task<IActionResult> AddToCart(int id)
+        {
+            if (!User.Identity!.IsAuthenticated)
             {
-                return NotFound();
+                return RedirectToAction("Login", "Account");
             }
 
-            var response = await _httpClient.GetAsync($"/api/Productos/{id}");
-            if (response.IsSuccessStatusCode)
+            var producto = await _producto.BuscarProductoAsync(id);
+            var usuario = await _usuario.GetUsuarioByEmail(User.Identity.Name!);
+
+            VentaTemporal ventaTemporal = new()
             {
-                var content = await response.Content.ReadAsStringAsync();
-                var producto = JsonConvert.DeserializeObject<ProductoDTO>(content);
-                return View(producto);
+                Producto = producto,
+                Usuario = usuario,
+                Cantidad = 1
+            };
+
+            var response = await _venta.GuardarVentaTemporalAsync(ventaTemporal);
+            if (response)
+            {
+                TempData["SuccessMessage"] = "El producto " + producto!.Nombre + " se ha agregado exitosamente al carrito";
+                return RedirectToAction(nameof(Index));
             }
-            return View();
+            TempData["ErrorMessage"] = "Error al agregar el producto " + producto!.Nombre + " ";
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> ShowCart()
+        {
+            Usuario usuario = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+            var ventasTemporales = await _venta.ObtenerTemporalesAsync();
+            List<VentaTemporal> ventaTemporal = ventasTemporales.Where(t => t.Usuario!.Id == usuario.Id).ToList();
+
+            CartViewModel model = new()
+            {
+                Usuario = usuario,
+                VentasTemporales = ventaTemporal
+            };
+
+            return View(model);
         }
 
         public IActionResult Privacy()
