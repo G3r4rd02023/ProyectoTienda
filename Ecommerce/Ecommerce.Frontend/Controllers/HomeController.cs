@@ -1,4 +1,6 @@
 using Ecommerce.Frontend.Models;
+using Ecommerce.Frontend.Services;
+using Ecommerce.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,16 +8,31 @@ namespace Ecommerce.Frontend.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly HttpClient _httpClient;
+        private readonly IServicioProducto _producto;
+        private readonly IServicioUsuario _usuario;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IHttpClientFactory httpClientFactory, IServicioProducto producto, IServicioUsuario usuario)
         {
-            _logger = logger;
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("https://localhost:7102/");
+            _producto = producto;
+            _usuario = usuario;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var productos = await _producto.ObtenerProductosAsync();
+            var categorias = await _producto.ObtenerCategoriasAsync();
+
+            // Crear el modelo y paginar productos
+            HomeViewModel model = new()
+            {
+                Productos = productos.ToList(),
+                Categorias = categorias.ToList()
+            };
+
+            return View(model);
         }
 
         public IActionResult Privacy()

@@ -25,6 +25,12 @@ namespace Ecommerce.Backend.Controllers
                 .ToListAsync());
         }
 
+        [HttpGet("Query/")]
+        public IQueryable<Producto> ObtenerProductos()
+        {
+            return _context.Productos.AsQueryable();
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostAsync(Producto producto)
         {

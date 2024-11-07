@@ -1,9 +1,11 @@
-﻿@{
+﻿@model Ecommerce.Frontend.Models.HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+ 
+<h3 class=" text-center text-info mt-3">Catálogo de Productos</h3>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -19,3 +21,68 @@
         });
     </script>
 }
+
+
+
+<div class="mb-3 mt-2 text-success text-center">
+    @foreach (var item in Model.Categorias!)
+    {
+        <span><strong>@item.Nombre&nbsp;&nbsp;</strong></span>
+    }
+</div> 
+
+
+@if (Model.Cantidad > 0)
+{
+    <a onclick="showInPopup('@Url.Action("VerCarrito", "Home", Context.Request.Scheme)' ,
+     '')" class="btn-sm btn-success"><i class=" fas fa-shopping-cart fa-beat"></i> Ver Carro de Compras(@Model.Cantidad) </a>
+
+}
+
+
+<div class=" row mb-3">
+    @if (Model.Productos!.Count() > 0)
+    {
+        <div class="row">
+            @foreach (var producto in Model.Productos!)
+            {
+                <div class="col-md-3">
+                    <div class="card mb-3 shadow-sm">
+                        <div class=" card-title text-center">
+                            <h5>@producto.Nombre</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class=" zoom">
+                                <img class="card-img-top" src="@producto.URLFoto" alt="Imagen del Producto" style="height:150px; max-width:200px;">
+                            </div>
+                            <p class="card-text">Precio: L. @producto.Precio</p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a onclick="showInPopup('@Url.Action("Detalles", "Home", new { id =producto.Id }, Context.Request.Scheme)' ,
+                            '')" class="btn btn-info btn-sm"><i class="oi oi-info"></i></a>
+                            <a asp-action="AddToCart" asp-route-id="@producto.Id" class="btn btn-sm btn-success"><i class="oi oi-cart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <h3>No hay productos con su criterio de búsqueda</h3>
+    }
+</div>
+
+
+<style type="text/css">
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid lightgray;
+        box-shadow: 2px 2px 8px 4px #d3d3d3d1;
+        border-radius: 15px;
+        font-family: sans-serif;
+        margin: 5px;
+    }
+</style>

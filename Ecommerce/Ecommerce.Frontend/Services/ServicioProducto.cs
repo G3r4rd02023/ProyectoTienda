@@ -1,4 +1,6 @@
-﻿using Ecommerce.Shared.Entities;
+﻿using Ecommerce.Frontend.Models;
+using Ecommerce.Shared.Entities;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Ecommerce.Frontend.Services
@@ -26,6 +28,39 @@ namespace Ecommerce.Frontend.Services
             }
             var codigo = $"P-{(lastNumber + 1).ToString("D5")}";
             return codigo;
+        }
+
+        public async Task<IEnumerable<Producto>> ObtenerProductosAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/Productos");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<IEnumerable<Producto>>(content)!;
+            }
+            return [];
+        }
+
+        public async Task<IEnumerable<Categoria>> ObtenerCategoriasAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/Categorias");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<IEnumerable<Categoria>>(content)!;
+            }
+            return [];
+        }
+
+        public async Task<IQueryable<Producto>> QueryProductosAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/Productos/Query");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<Producto>>(content)!.AsQueryable();
+            }
+            return Enumerable.Empty<Producto>().AsQueryable();
         }
     }
 }
