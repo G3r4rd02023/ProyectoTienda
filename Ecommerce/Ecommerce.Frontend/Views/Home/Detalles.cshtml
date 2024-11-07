@@ -1,0 +1,34 @@
+﻿@model Ecommerce.Frontend.Models.ProductoDTO
+@{
+    ViewData["Title"] = "Detalles";
+    Layout = "~/Views/Shared/ModalLayout.cshtml";
+}
+
+<div class="card text-center shadow-lg mb-4">
+    <div class="card-header bg-success">
+        <h5 class="text-white mb-0">Detalles del Producto</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row text-start justify-content-center">
+            <dt class="col-sm-4 fw-semibold">Nombre:</dt>
+            <dd class="col-sm-8">@Model.Nombre</dd>
+
+            <dt class="col-sm-4 fw-semibold">Descripción:</dt>
+            <dd class="col-sm-8">@Model.Descripcion</dd>
+
+            <dt class="col-sm-4 fw-semibold">Precio:</dt>
+            <dd class="col-sm-8">L. @Model.Precio</dd>
+
+            <dt class="col-sm-4 fw-semibold">Disponibles:</dt>
+            <dd class="col-sm-8"><strong>@Model.Stock</strong></dd>
+
+            <dt class="col-sm-4 fw-semibold">Foto:</dt>
+            <dd class="col-sm-8">
+                <img src="@Model.URLFoto" alt="Imagen del producto" class="rounded img-fluid shadow-sm" style="max-width: 200px; max-height: 200px;" />
+            </dd>
+        </dl>
+    </div>
+</div>
+
+
+

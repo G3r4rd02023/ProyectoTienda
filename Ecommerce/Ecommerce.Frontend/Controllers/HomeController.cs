@@ -1,6 +1,7 @@
 using Ecommerce.Frontend.Models;
 using Ecommerce.Frontend.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace Ecommerce.Frontend.Controllers
@@ -48,6 +49,23 @@ namespace Ecommerce.Frontend.Controllers
             };
 
             return View(model);
+        }
+
+        public async Task<IActionResult> Detalles(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var response = await _httpClient.GetAsync($"/api/Productos/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var producto = JsonConvert.DeserializeObject<ProductoDTO>(content);
+                return View(producto);
+            }
+            return View();
         }
 
         public IActionResult Privacy()

@@ -69,7 +69,7 @@
                             <p class="card-text">Precio: L. @producto.Precio</p>
                         </div>
                         <div class="card-footer text-center">
-                            <a onclick="showInPopup('@Url.Action("Detalles", "Home", new { id =producto.Id }, Context.Request.Scheme)' ,
+                            <a onclick="showInPopup('@Url.Action("Detalles", "Home", new { id = producto.Id }, Context.Request.Scheme)' ,
                             '')" class="btn btn-info btn-sm"><i class="oi oi-info"></i></a>
                             <a asp-action="AddToCart" asp-route-id="@producto.Id" class="btn btn-sm btn-success"><i class="oi oi-cart"></i></a>
                         </div>
@@ -84,6 +84,7 @@
     }
 </div>
 
+<partial name="_MostrarModal" />
 
 <div class="card col-md-3 bg-info p-2">
     <nav aria-label="Product pagination">
@@ -130,8 +131,13 @@
     }
 </style>
 
-<script>
-    function submitForm() {
-        document.getElementById('searchForm').submit();
-    }
-</script>
+@section Scripts {
+    <script src="~/js/showmodal.js"></script>
+
+    <script>
+        function submitForm() {
+            document.getElementById('searchForm').submit();
+        }
+    </script>
+}
+
