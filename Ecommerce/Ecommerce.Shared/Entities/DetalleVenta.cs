@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Ecommerce.Shared.Entities
 {
@@ -6,6 +7,7 @@ namespace Ecommerce.Shared.Entities
     {
         public int Id { get; set; }
 
+        [JsonIgnore]
         public Venta? Venta { get; set; }
 
         [DataType(DataType.MultilineText)]

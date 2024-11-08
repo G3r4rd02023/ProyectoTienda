@@ -165,5 +165,16 @@ namespace Ecommerce.Frontend.Services
             }
             return response;
         }
+
+        public async Task<IEnumerable<Venta>> ObtenerVentasAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/Ventas");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<IEnumerable<Venta>>(content)!;
+            }
+            return [];
+        }
     }
 }

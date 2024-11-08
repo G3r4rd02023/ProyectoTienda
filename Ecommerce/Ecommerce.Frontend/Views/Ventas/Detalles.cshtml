@@ -1,0 +1,144 @@
+﻿@model Ecommerce.Shared.Entities.Venta
+@{
+    ViewData["Title"] = "Detalles";
+    Layout = null;
+}
+
+<h4>Pedido</h4>
+<hr />
+<dl class="row ">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Fecha)
+    </dt>
+    <dd class="col-sm-10">
+        <strong>@Html.DisplayFor(model => model.Fecha)</strong>
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Usuario!.Nombre)
+    </dt>
+    <dd class="col-sm-10">
+        <strong>@Html.DisplayFor(model => model.Usuario!.Nombre)</strong>
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Usuario!.Correo)
+    </dt>
+    <dd class="col-sm-10">
+        <strong>@Html.DisplayFor(model => model.Usuario!.Correo)</strong>
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Comentario)
+    </dt>
+    <dd class="col-sm-10">
+        <strong>@Html.DisplayFor(model => model.Comentario)</strong>
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.EstadoPedido)
+    </dt>
+    <dd class="col-sm-10">
+        <strong>@Html.DisplayFor(model => model.EstadoPedido)</strong>
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Cantidad)
+    </dt>
+    <dd class="col-sm-10">
+        <strong>@Html.DisplayFor(model => model.Cantidad)</strong>
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Total)
+    </dt>
+    <dd class="col-sm-10">
+        <strong>@Html.DisplayFor(model => model.Total)</strong>
+    </dd>
+</dl>
+<hr />
+
+<hr />
+<div class=" text-center">
+    <a asp-action="Despachar" asp-route-id="@Model?.Id" class="btn-sm btn btn-primary">Despachar</a>
+    <a asp-action="Enviar" asp-route-id="@Model?.Id" class="btn-sm btn btn-info">Envíar</a>
+    <a asp-action="Confirmar" asp-route-id="@Model?.Id" class="btn-sm btn btn-success">Confirmar</a>
+    <a asp-action="Cancelar" asp-route-id="@Model?.Id" class="btn-sm btn btn-danger">Cancelar</a>
+</div>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card"> 
+            <div class="card-header bg-info">
+                <h5 class="card-title text-center text-white">Productos</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover table-responsive table-striped" id="detail">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DetallesVenta!.FirstOrDefault()!.Producto!.Nombre)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.DetallesVenta!.FirstOrDefault()!.Producto!.Precio)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DetallesVenta!.FirstOrDefault()!.Cantidad)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DetallesVenta!.FirstOrDefault()!.Total)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DetallesVenta!.FirstOrDefault()!.Producto!.URLFoto)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model!.DetallesVenta!)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Producto!.Nombre)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Producto!.Precio)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Cantidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Total)
+                                </td>
+                                <td>
+                                    <div class="zoom">
+                                        <img src="@item.Producto!.URLFoto" style="width:100px;" />
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#detail').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [25, 50, 100, 200, -1],
+                    [25, 50, 100, 200, "Todos"]
+                ]
+            });
+        });
+    </script>
+}
