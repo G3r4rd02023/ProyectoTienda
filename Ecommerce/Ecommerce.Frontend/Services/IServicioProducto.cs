@@ -12,5 +12,7 @@ namespace Ecommerce.Frontend.Services
         Task<IEnumerable<Categoria>> ObtenerCategoriasAsync();
 
         Task<ProductoDTO?> BuscarProductoAsync(int id);
+
+        Task<bool> ActualizarProductoAsync(Producto producto);
     }
 }

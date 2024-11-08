@@ -3,6 +3,7 @@ using Ecommerce.Shared.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Ecommerce.Frontend.Services
 {
@@ -78,6 +79,18 @@ namespace Ecommerce.Frontend.Services
                 Console.WriteLine($"JSON parsing error: {ex.Message}");
             }
             return null;
+        }
+
+        public async Task<bool> ActualizarProductoAsync(Producto producto)
+        {
+            var json = JsonConvert.SerializeObject(producto);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync($"/api/Productos/{producto.Id}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

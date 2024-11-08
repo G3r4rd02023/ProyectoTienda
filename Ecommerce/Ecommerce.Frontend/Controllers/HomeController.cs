@@ -132,6 +132,31 @@ namespace Ecommerce.Frontend.Controllers
             return RedirectToAction(nameof(ShowCart));
         }
 
+        public IActionResult ConfirmarVenta()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ShowCart(CartViewModel model)
+        {
+            Usuario usuario = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+
+            var ventasTemporales = await _venta.ObtenerTemporalesAsync();
+            model.VentasTemporales = ventasTemporales.Where(t => t.Usuario!.Id == usuario.Id).ToList();
+            model.Usuario = usuario;
+
+            Response response = await _venta.ProcesarVenta(model);
+            if (response.IsSuccess)
+            {
+                return RedirectToAction(nameof(ConfirmarVenta));
+            }
+
+            ModelState.AddModelError(string.Empty, response.Message!);
+            return View(model);
+        }
+
         public IActionResult Privacy()
         {
             return View();

@@ -1,4 +1,5 @@
-﻿using Ecommerce.Shared.Entities;
+﻿using Ecommerce.Frontend.Models;
+using Ecommerce.Shared.Entities;
 
 namespace Ecommerce.Frontend.Services
 {
@@ -15,5 +16,9 @@ namespace Ecommerce.Frontend.Services
         Task<bool> ActualizarVentaTemporalAsync(VentaTemporal ventaTemporal);
 
         Task<bool> EliminarVentaTemporalAsync(VentaTemporal ventaTemporal);
+
+        Task<Response> ProcesarVenta(CartViewModel model);
+
+        Task<Response> CancelarVenta(int id);
     }
 }
