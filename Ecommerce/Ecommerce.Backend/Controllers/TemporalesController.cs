@@ -25,6 +25,20 @@ namespace Ecommerce.Backend.Controllers
                 .ToListAsync());
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync(int id)
+        {
+            var temporal = await _context.VentasTemporal
+                .Include(t => t.Producto)
+                .Include(t => t.Usuario)
+                .SingleOrDefaultAsync(p => p.Id == id);
+            if (temporal == null)
+            {
+                return NotFound();
+            }
+            return Ok(temporal);
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostAsync(VentaTemporal temporal)
         {

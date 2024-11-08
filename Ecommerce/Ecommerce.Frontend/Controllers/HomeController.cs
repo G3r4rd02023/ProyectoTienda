@@ -104,6 +104,34 @@ namespace Ecommerce.Frontend.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Disminuir(int id)
+        {
+            VentaTemporal ventaTemporal = await _venta.ObtenerVentaTemporalAsync(id);
+
+            if (ventaTemporal.Cantidad > 1)
+            {
+                ventaTemporal.Cantidad--;
+                await _venta.ActualizarVentaTemporalAsync(ventaTemporal);
+            }
+            return RedirectToAction(nameof(ShowCart));
+        }
+
+        public async Task<IActionResult> Incrementar(int id)
+        {
+            VentaTemporal ventaTemporal = await _venta.ObtenerVentaTemporalAsync(id);
+
+            ventaTemporal.Cantidad++;
+            await _venta.ActualizarVentaTemporalAsync(ventaTemporal);
+            return RedirectToAction(nameof(ShowCart));
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            VentaTemporal ventaTemporal = await _venta.ObtenerVentaTemporalAsync(id);
+            await _venta.EliminarVentaTemporalAsync(ventaTemporal);
+            return RedirectToAction(nameof(ShowCart));
+        }
+
         public IActionResult Privacy()
         {
             return View();

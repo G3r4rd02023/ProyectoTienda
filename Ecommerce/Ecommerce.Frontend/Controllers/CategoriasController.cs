@@ -1,5 +1,4 @@
 ﻿using Ecommerce.Shared.Entities;
-using Ecommerce.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;

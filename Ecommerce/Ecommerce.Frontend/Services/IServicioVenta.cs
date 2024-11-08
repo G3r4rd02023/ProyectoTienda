@@ -9,5 +9,11 @@ namespace Ecommerce.Frontend.Services
         Task<IEnumerable<VentaTemporal>> ObtenerTemporalesAsync();
 
         Task<int> ObtenerCantidad(string usuario);
+
+        Task<VentaTemporal> ObtenerVentaTemporalAsync(int id);
+
+        Task<bool> ActualizarVentaTemporalAsync(VentaTemporal ventaTemporal);
+
+        Task<bool> EliminarVentaTemporalAsync(VentaTemporal ventaTemporal);
     }
 }

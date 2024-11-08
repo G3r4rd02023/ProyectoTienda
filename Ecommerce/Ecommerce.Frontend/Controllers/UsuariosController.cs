@@ -124,7 +124,7 @@ namespace Ecommerce.Frontend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Access(int id, AllowUserViewModel model)
+        public async Task<IActionResult> Access(AllowUserViewModel model)
         {
             if (ModelState.IsValid)
             {
