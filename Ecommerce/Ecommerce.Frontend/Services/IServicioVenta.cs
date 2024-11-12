@@ -13,9 +13,13 @@ namespace Ecommerce.Frontend.Services
 
         Task<int> ObtenerCantidad(string usuario);
 
+        Task<Venta> ObtenerVentaAsync(int id);
+
         Task<VentaTemporal> ObtenerVentaTemporalAsync(int id);
 
         Task<bool> ActualizarVentaTemporalAsync(VentaTemporal ventaTemporal);
+
+        Task<bool> ActualizarVentaAsync(Venta venta);
 
         Task<bool> EliminarVentaTemporalAsync(VentaTemporal ventaTemporal);
 

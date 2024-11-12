@@ -1,7 +1,6 @@
 ﻿using Ecommerce.Frontend.Models;
 using Ecommerce.Shared.Entities;
 using Ecommerce.Shared.Enums;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -31,9 +30,23 @@ namespace Ecommerce.Frontend.Services
             return false;
         }
 
-        public Task<Response> CancelarVenta(int id)
+        public async Task<Response> CancelarVenta(int id)
         {
-            throw new NotImplementedException();
+            var ventas = await ObtenerVentasAsync();
+            Venta venta = ventas.FirstOrDefault(x => x.Id == id)!;
+
+            foreach (DetalleVenta detalle in venta.DetallesVenta!)
+            {
+                Producto? producto = await _producto.BuscarProductoAsync(detalle.Producto!.Id);
+                if (producto != null)
+                {
+                    producto.Stock += detalle.Cantidad;
+                }
+            }
+
+            venta.EstadoPedido = EstadoPedido.Cancelado;
+            await ActualizarVentaAsync(venta);
+            return new Response { IsSuccess = true };
         }
 
         public async Task<bool> EliminarVentaTemporalAsync(VentaTemporal ventaTemporal)
@@ -175,6 +188,29 @@ namespace Ecommerce.Frontend.Services
                 return JsonConvert.DeserializeObject<IEnumerable<Venta>>(content)!;
             }
             return [];
+        }
+
+        public async Task<Venta> ObtenerVentaAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/Ventas/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Venta>(content)!;
+            }
+            return null!;
+        }
+
+        public async Task<bool> ActualizarVentaAsync(Venta venta)
+        {
+            var json = JsonConvert.SerializeObject(venta);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync($"/api/Ventas/{venta.Id}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
