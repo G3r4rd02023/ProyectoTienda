@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Frontend.Models;
 using Ecommerce.Shared.Entities;
+using Ecommerce.Shared.Models;
 
 namespace Ecommerce.Frontend.Services
 {
@@ -14,5 +15,7 @@ namespace Ecommerce.Frontend.Services
         Task<ProductoDTO?> BuscarProductoAsync(int id);
 
         Task<bool> ActualizarProductoAsync(Producto producto);
+
+        Task<List<ProductosViewModel>> ObtenerResumenProductos();
     }
 }

@@ -41,14 +41,15 @@
                                         <li><a class="dropdown-item text-white-50" asp-controller="Usuarios" asp-action="Index"><span class="oi oi-person"></span>  Usuarios</a></li>
                                         <li><a class="dropdown-item text-white-50" asp-controller="Productos" asp-action="Index"><span class="oi oi-star"></span>  Productos</a></li>
                                         <li><a class="dropdown-item text-white-50" asp-controller="Ventas" asp-action="Index"><span class="oi oi-monitor"></span>  Ventas</a></li>
+                                        <li><a class="dropdown-item text-white-50" asp-controller="Dashboard" asp-action="Index"><span class="oi oi-pie-chart"></span>  Dashboard</a></li>
                                     </ul>
                                 </li>
                             }
                             @if (User.Identity.IsAuthenticated && User.IsInRole("Usuario"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Edit"><span class="oi oi-person"></span> Perfil</a>
-
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Usuarios" asp-action="Edit"><span class="oi oi-person"></span> Perfil</a>
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Ventas" asp-action="Compras"><span class="oi oi-cart"></span> Mis Compras</a>
                                 </li>
                             }
                         </ul>
@@ -91,6 +92,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

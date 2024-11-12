@@ -212,5 +212,17 @@ namespace Ecommerce.Frontend.Services
             }
             return false;
         }
+
+        public async Task<List<VentasViewModel>> ObtenerResumenVenta()
+        {
+            var response = await _httpClient.GetAsync("/api/Ventas/Resumen");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var resumen = JsonConvert.DeserializeObject<List<VentasViewModel>>(content);
+                return resumen!;
+            }
+            return [];
+        }
     }
 }

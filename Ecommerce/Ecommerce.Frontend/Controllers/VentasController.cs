@@ -9,15 +9,42 @@ namespace Ecommerce.Frontend.Controllers
     public class VentasController : Controller
     {
         private readonly IServicioVenta _venta;
+        private readonly IServicioUsuario _usuario;
 
-        public VentasController(IServicioVenta venta)
+        public VentasController(IServicioVenta venta, IServicioUsuario usuario)
         {
             _venta = venta;
+            _usuario = usuario;
         }
 
         public async Task<IActionResult> Index()
         {
             var venta = await _venta.ObtenerVentasAsync();
+            return View(venta);
+        }
+
+        public async Task<IActionResult> Compras()
+        {
+            var ventas = await _venta.ObtenerVentasAsync();
+            var compras = ventas.Where(s => s.Usuario!.Correo == User!.Identity!.Name).ToList();
+
+            var usuarios = await _usuario.ObtenerUsuariosAsync();
+            var usuario = usuarios.Where(u => u.Correo == User.Identity!.Name).FirstOrDefault();
+
+            ViewBag.UsuarioActual = usuario;
+
+            return View(compras);
+        }
+
+        public async Task<IActionResult> MisDetalles(int id)
+        {
+            var ventas = await _venta.ObtenerVentasAsync();
+            var venta = ventas.Where(x => x.Usuario!.Correo == User.Identity!.Name).FirstOrDefault(v => v.Id == id);
+            if (venta == null)
+            {
+                return NotFound();
+            }
+
             return View(venta);
         }
 

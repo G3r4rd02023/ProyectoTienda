@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Backend.Data;
 using Ecommerce.Shared.Entities;
+using Ecommerce.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +24,6 @@ namespace Ecommerce.Backend.Controllers
             return Ok(await _context.Productos
                 .Include(p => p.Categoria)
                 .ToListAsync());
-        }
-
-        [HttpGet("Query/")]
-        public IQueryable<Producto> ObtenerProductos()
-        {
-            return _context.Productos.AsQueryable();
         }
 
         [HttpPost]
@@ -97,6 +92,23 @@ namespace Ecommerce.Backend.Controllers
             _context.Remove(producto);
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+
+        [HttpGet("Resumen/")]
+        public async Task<IActionResult> Resumen()
+        {
+            var lista = await _context.DetalleVentas
+                    .GroupBy(dv => dv.Producto!.Nombre)
+                    .OrderByDescending(grupo => grupo.Count())
+                    .Take(5)
+                    .Select(grupo => new ProductosViewModel
+                    {
+                        Producto = grupo.Key,
+                        Cantidad = grupo.Count()
+                    })
+                    .ToListAsync();
+
+            return Ok(lista);
         }
     }
 }

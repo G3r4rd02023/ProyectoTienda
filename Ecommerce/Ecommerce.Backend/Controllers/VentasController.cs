@@ -1,5 +1,7 @@
 ﻿using Ecommerce.Backend.Data;
+using Ecommerce.Backend.Migrations;
 using Ecommerce.Shared.Entities;
+using Ecommerce.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -92,6 +94,25 @@ namespace Ecommerce.Backend.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
+
+        [HttpGet("Resumen/")]
+        public async Task<IActionResult> Resumen()
+        {
+            DateTime FechaInicio = DateTime.Now;
+            FechaInicio = FechaInicio.AddDays(-5);
+
+            var lista = await _context.Ventas
+                        .Where(tbventa => tbventa.Fecha.Date >= FechaInicio.Date)
+                        .GroupBy(tbventa => tbventa.Fecha.Date)
+                        .Select(grupo => new VentasViewModel
+                        {
+                            Fecha = grupo.Key.ToString("dd/MM/yyyy"),
+                            Cantidad = grupo.Count()
+                        })
+                        .ToListAsync();
+
+            return Ok(lista);
         }
     }
 }

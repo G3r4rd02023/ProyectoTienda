@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Frontend.Models;
 using Ecommerce.Shared.Entities;
+using Ecommerce.Shared.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -91,6 +92,18 @@ namespace Ecommerce.Frontend.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<List<ProductosViewModel>> ObtenerResumenProductos()
+        {
+            var response = await _httpClient.GetAsync("/api/Productos/Resumen");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var resumen = JsonConvert.DeserializeObject<List<ProductosViewModel>>(content);
+                return resumen!;
+            }
+            return [];
         }
     }
 }

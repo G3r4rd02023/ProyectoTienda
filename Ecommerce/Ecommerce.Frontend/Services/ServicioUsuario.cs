@@ -20,5 +20,22 @@ namespace Ecommerce.Frontend.Services
             var usuario = JsonConvert.DeserializeObject<Usuario>(json);
             return usuario!;
         }
+
+        public async Task<IEnumerable<Usuario>> ObtenerUsuariosAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/Usuarios");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var usuarios = JsonConvert.DeserializeObject<IEnumerable<Usuario>>(content);
+                return usuarios!;
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                return [];
+            }
+            return [];
+        }
     }
 }

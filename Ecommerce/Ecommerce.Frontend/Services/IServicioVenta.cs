@@ -26,5 +26,7 @@ namespace Ecommerce.Frontend.Services
         Task<Response> ProcesarVenta(CartViewModel model);
 
         Task<Response> CancelarVenta(int id);
+
+        Task<List<VentasViewModel>> ObtenerResumenVenta();
     }
 }

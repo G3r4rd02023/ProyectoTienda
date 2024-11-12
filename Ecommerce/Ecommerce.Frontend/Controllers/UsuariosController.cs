@@ -28,19 +28,8 @@ namespace Ecommerce.Frontend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var response = await _httpClient.GetAsync("/api/Usuarios");
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var usuarios = JsonConvert.DeserializeObject<IEnumerable<Usuario>>(content);
-                return View("Index", usuarios);
-            }
-
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            return View(new List<Usuario>());
+            var usuarios = await _usuario.ObtenerUsuariosAsync();
+            return View(usuarios);
         }
 
         public IActionResult Create()

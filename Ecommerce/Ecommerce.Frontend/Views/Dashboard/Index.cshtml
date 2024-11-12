@@ -1,0 +1,192 @@
+﻿@model IEnumerable<Ecommerce.Shared.Entities.VentaTemporal>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+<div class="container-fluid">
+    <h3 class="text-center"></h3>
+</div>
+
+<hr />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body d-flex align-items-center justify-content-between"><h7>Nuevos Pedidos <span class="badge bg-light text-dark">@ViewBag.NuevosPedidos</span></h7> <i class="oi oi-cart"></i> </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href=@Url.Action("Index","Ventas")>Ver Pedidos</a>
+                    <div class="small text-white"><i class="oi oi-pin"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body d-flex align-items-center justify-content-between"><h7>Productos <span class="badge bg-light text-dark">@ViewBag.CantidadProductos</span> </h7> <i class="oi oi-tag"></i></div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href=@Url.Action("Index","Productos")>Ver Productos</a>
+                    <div class="small text-white"><i class="oi oi-pin"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body d-flex align-items-center justify-content-between"><h7>Usuarios <span class="badge bg-light text-dark">@ViewBag.CantidadUsuarios</span> </h7>  <i class="oi oi-person"></i> </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href=@Url.Action("Index","Usuarios")>Ver Usuarios</a>
+                    <div class="small text-white"><i class="oi oi-pin"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body d-flex align-items-center justify-content-between"><h7>Confirmados <span class="badge bg-light text-dark">@ViewBag.CantidadVentasConfirmadas</span></h7> <i class="oi oi-clock"></i> </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href=@Url.Action("Index","Ventas")>Ver Pedidos</a>
+                    <div class="small text-white"><i class="oi oi-pin"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2">
+
+    <div class="col-sm-6">
+
+        <div class="card">
+            <div class="card-header">Ventas ultimos 5 días </div>
+            <div class="card-body">
+                <canvas id="chartVentas" style="max-height:250px"></canvas>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-sm-6">
+
+        <div class="card">
+            <div class="card-header">Productos mayor vendidos </div>
+            <div class="card-body">
+                <canvas id="chartProductos" style="max-height:250px"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+        function resumenVenta() {
+
+            fetch("/Dashboard/ResumenVenta")
+                .then((response) => {
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then((dataJson) => {
+
+
+                    const labels = dataJson.map((item) => { return item.fecha })
+                    const values = dataJson.map((item) => { return item.cantidad })
+
+
+                    const data = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'cantidad',
+                            data: values,
+                            backgroundColor: 'rgb(54, 162, 235)',
+                            borderWidth: 1
+                        }]
+                    };
+
+                    const config = {
+                        type: 'bar',
+                        data: data,
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        },
+                    };
+
+
+                    const canvasBarras = document.getElementById("chartVentas");
+
+                    const graficoBarras = new Chart(canvasBarras, config)
+
+                }).catch((error) => {
+                    console.log("Error:", error);
+                })
+
+
+        }
+
+
+        function resumenProducto() {
+
+            fetch("/Dashboard/ResumenProducto")
+                .then((response) => {
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then((dataJson) => {
+
+
+
+                    const labels = dataJson.map((item) => { return item.producto })
+                    const values = dataJson.map((item) => { return item.cantidad })
+
+                    const data = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Cantidad',
+                            data: values,
+                            backgroundColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(54, 162, 235)',
+                                'rgb(255, 205, 86)',
+                                "#01AF40",
+                                "#6A0DAD"
+                            ],
+                            hoverOffset: 4
+                        }]
+                    };
+
+
+                    const config = {
+                        type: 'doughnut',
+                        data: data,
+                    };
+
+
+                    const canvasDona = document.getElementById("chartProductos");
+
+                    const graficoDona = new Chart(canvasDona, config)
+
+                }).catch((error) => {
+                    console.log("error")
+
+                })
+
+
+        }
+
+        $(document).ready(() => {
+
+            resumenVenta()
+            resumenProducto()
+        })
+
+    </script>
+
+
+
+}
