@@ -1,9 +1,8 @@
 ﻿using Ecommerce.Frontend.Models;
 using Ecommerce.Shared.Entities;
 using Ecommerce.Shared.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Ecommerce.Frontend.Services
@@ -11,15 +10,21 @@ namespace Ecommerce.Frontend.Services
     public class ServicioProducto : IServicioProducto
     {
         private readonly HttpClient _httpClient;
+        private readonly IServicioUsuario _usuario;
 
-        public ServicioProducto(IHttpClientFactory httpClientFactory)
+        public ServicioProducto(IHttpClientFactory httpClientFactory, IServicioUsuario usuario)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7102/");
+            _usuario = usuario;
         }
 
-        public async Task<string> ObtenerCodigo()
+        public async Task<string> ObtenerCodigo(string usuario)
         {
+            var user = await _usuario.GetUsuarioByEmail(usuario);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync("/api/Productos");
             var content = await response.Content.ReadAsStringAsync();
             var productos = JsonConvert.DeserializeObject<IEnumerable<Producto>>(content);
@@ -33,8 +38,12 @@ namespace Ecommerce.Frontend.Services
             return codigo;
         }
 
-        public async Task<IEnumerable<Producto>> ObtenerProductosAsync()
+        public async Task<IEnumerable<Producto>> ObtenerProductosAsync(string usuario)
         {
+            var user = await _usuario.GetUsuarioByEmail(usuario);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync("/api/Productos");
             if (response.IsSuccessStatusCode)
             {
@@ -44,8 +53,12 @@ namespace Ecommerce.Frontend.Services
             return [];
         }
 
-        public async Task<IEnumerable<Categoria>> ObtenerCategoriasAsync()
+        public async Task<IEnumerable<Categoria>> ObtenerCategoriasAsync(string usuario)
         {
+            var user = await _usuario.GetUsuarioByEmail(usuario);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync("/api/Categorias");
             if (response.IsSuccessStatusCode)
             {
@@ -55,10 +68,14 @@ namespace Ecommerce.Frontend.Services
             return [];
         }
 
-        public async Task<ProductoDTO?> BuscarProductoAsync(int id)
+        public async Task<ProductoDTO?> BuscarProductoAsync(int id, string usuario)
         {
             try
             {
+                var user = await _usuario.GetUsuarioByEmail(usuario);
+                var servicioToken = new ServicioToken();
+                var token = await servicioToken.Autenticar(user);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var response = await _httpClient.GetAsync($"/api/Productos/{id}");
                 if (response.IsSuccessStatusCode)
                 {
@@ -82,8 +99,12 @@ namespace Ecommerce.Frontend.Services
             return null;
         }
 
-        public async Task<bool> ActualizarProductoAsync(Producto producto)
+        public async Task<bool> ActualizarProductoAsync(Producto producto, string usuario)
         {
+            var user = await _usuario.GetUsuarioByEmail(usuario);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var json = JsonConvert.SerializeObject(producto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"/api/Productos/{producto.Id}", content);
@@ -94,8 +115,12 @@ namespace Ecommerce.Frontend.Services
             return false;
         }
 
-        public async Task<List<ProductosViewModel>> ObtenerResumenProductos()
+        public async Task<List<ProductosViewModel>> ObtenerResumenProductos(string usuario)
         {
+            var user = await _usuario.GetUsuarioByEmail(usuario);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync("/api/Productos/Resumen");
             if (response.IsSuccessStatusCode)
             {
@@ -106,8 +131,12 @@ namespace Ecommerce.Frontend.Services
             return [];
         }
 
-        public async Task<bool> GuardarProductoAsync(Producto producto)
+        public async Task<bool> GuardarProductoAsync(Producto producto, string usuario)
         {
+            var user = await _usuario.GetUsuarioByEmail(usuario);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var json = JsonConvert.SerializeObject(producto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("/api/Productos/", content);

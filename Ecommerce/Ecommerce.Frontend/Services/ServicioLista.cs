@@ -1,21 +1,29 @@
 ﻿using Ecommerce.Shared.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 
 namespace Ecommerce.Frontend.Services
 {
     public class ServicioLista : IServicioLista
     {
         private readonly HttpClient _httpClient;
+        private readonly IServicioUsuario _usuario;
 
-        public ServicioLista(IHttpClientFactory httpClientFactory)
+        public ServicioLista(IHttpClientFactory httpClientFactory, IServicioUsuario usuario)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7102/");
+            _usuario = usuario;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetListaCategorias()
+        public async Task<IEnumerable<SelectListItem>> GetListaCategorias(string usuario)
         {
+            var user = await _usuario.GetUsuarioByEmail(usuario);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync("/api/Categorias");
             if (response.IsSuccessStatusCode)
             {

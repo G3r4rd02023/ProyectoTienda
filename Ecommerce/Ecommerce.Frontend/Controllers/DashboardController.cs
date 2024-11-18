@@ -23,7 +23,7 @@ namespace Ecommerce.Frontend.Controllers
         {
             var usuarios = await _usuario.ObtenerUsuariosAsync();
             ViewBag.CantidadUsuarios = usuarios.Count();
-            var productos = await _producto.ObtenerProductosAsync();
+            var productos = await _producto.ObtenerProductosAsync(User.Identity!.Name!);
             ViewBag.CantidadProductos = productos.Count();
             var ventas = await _venta.ObtenerVentasAsync();
             ViewBag.NuevosPedidos = ventas.Where(v => v.EstadoPedido == Shared.Enums.EstadoPedido.Nuevo).Count();
@@ -40,7 +40,7 @@ namespace Ecommerce.Frontend.Controllers
 
         public async Task<IActionResult> ResumenProducto()
         {
-            var resumen = await _producto.ObtenerResumenProductos();
+            var resumen = await _producto.ObtenerResumenProductos(User.Identity!.Name!);
             return Ok(resumen);
         }
     }

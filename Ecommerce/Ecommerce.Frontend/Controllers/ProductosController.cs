@@ -5,6 +5,7 @@ using Ecommerce.Frontend.Services;
 using Ecommerce.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Ecommerce.Frontend.Controllers
@@ -15,18 +16,26 @@ namespace Ecommerce.Frontend.Controllers
         private readonly Cloudinary _cloudinary;
         private readonly IServicioProducto _producto;
         private readonly IServicioLista _lista;
+        private readonly IServicioUsuario _usuario;
 
-        public ProductosController(IHttpClientFactory httpClientFactory, Cloudinary cloudinary, IServicioProducto producto, IServicioLista lista)
+        public ProductosController(IHttpClientFactory httpClientFactory, Cloudinary cloudinary, IServicioProducto producto,
+            IServicioLista lista, IServicioUsuario usuario)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7102/");
             _cloudinary = cloudinary;
             _producto = producto;
             _lista = lista;
+            _usuario = usuario;
         }
 
         public async Task<IActionResult> Index()
         {
+            var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var response = await _httpClient.GetAsync("/api/Productos");
             if (response.IsSuccessStatusCode)
             {
@@ -46,8 +55,8 @@ namespace Ecommerce.Frontend.Controllers
         {
             ProductoDTO producto = new()
             {
-                Codigo = await _producto.ObtenerCodigo(),
-                Categorias = await _lista.GetListaCategorias()
+                Codigo = await _producto.ObtenerCodigo(User.Identity!.Name!),
+                Categorias = await _lista.GetListaCategorias(User.Identity.Name!)
             };
             return View(producto);
         }
@@ -77,6 +86,11 @@ namespace Ecommerce.Frontend.Controllers
                     producto.URLFoto = urlImagen;
                 }
 
+                var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+                var servicioToken = new ServicioToken();
+                var token = await servicioToken.Autenticar(user);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
                 var json = JsonConvert.SerializeObject(producto);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync("/api/Productos/", content);
@@ -96,12 +110,16 @@ namespace Ecommerce.Frontend.Controllers
                     return RedirectToAction("Index", "Productos");
                 }
             }
-            producto.Categorias = await _lista.GetListaCategorias();
+            producto.Categorias = await _lista.GetListaCategorias(User.Identity!.Name!);
             return View(producto);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
+            var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync($"/api/Productos/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -116,7 +134,7 @@ namespace Ecommerce.Frontend.Controllers
                 return NotFound();
             }
 
-            producto.Categorias = await _lista.GetListaCategorias();
+            producto.Categorias = await _lista.GetListaCategorias(User.Identity!.Name!);
             return View(producto);
         }
 
@@ -125,6 +143,9 @@ namespace Ecommerce.Frontend.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+                var servicioToken = new ServicioToken();
+                var token = await servicioToken.Autenticar(user);
                 if (file != null)
                 {
                     var uploadParams = new ImageUploadParams()
@@ -146,11 +167,17 @@ namespace Ecommerce.Frontend.Controllers
                 }
                 else
                 {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     var productoResponse = await _httpClient.GetAsync($"/api/Productos/{producto.Id}");
                     var productoContent = await productoResponse.Content.ReadAsStringAsync();
                     var productoExistente = JsonConvert.DeserializeObject<ProductoDTO>(productoContent);
-                    producto.URLFoto = productoExistente!.URLFoto;
+                    if (productoExistente != null)
+                    {
+                        producto.URLFoto = productoExistente!.URLFoto;
+                    }
                 }
+
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var json = JsonConvert.SerializeObject(producto);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PutAsync($"/api/Productos/{producto.Id}", content);
@@ -170,6 +197,10 @@ namespace Ecommerce.Frontend.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.DeleteAsync($"/api/Productos/{id}");
 
             if (response.IsSuccessStatusCode)

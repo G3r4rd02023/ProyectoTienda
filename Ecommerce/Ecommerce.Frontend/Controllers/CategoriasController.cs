@@ -1,6 +1,8 @@
-﻿using Ecommerce.Shared.Entities;
+﻿using Ecommerce.Frontend.Services;
+using Ecommerce.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Ecommerce.Frontend.Controllers
@@ -8,15 +10,21 @@ namespace Ecommerce.Frontend.Controllers
     public class CategoriasController : Controller
     {
         private readonly HttpClient _httpClient;
+        private readonly IServicioUsuario _usuario;
 
-        public CategoriasController(IHttpClientFactory httpClientFactory)
+        public CategoriasController(IHttpClientFactory httpClientFactory, IServicioUsuario usuario)
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7102/");
+            _usuario = usuario;
         }
 
         public async Task<IActionResult> Index()
         {
+            var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync("/api/Categorias");
             if (response.IsSuccessStatusCode)
             {
@@ -42,6 +50,10 @@ namespace Ecommerce.Frontend.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+                var servicioToken = new ServicioToken();
+                var token = await servicioToken.Autenticar(user);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var json = JsonConvert.SerializeObject(categoria);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync("/api/Categorias/", content);
@@ -67,6 +79,10 @@ namespace Ecommerce.Frontend.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync($"/api/Categorias/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -89,6 +105,10 @@ namespace Ecommerce.Frontend.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+                var servicioToken = new ServicioToken();
+                var token = await servicioToken.Autenticar(user);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var json = JsonConvert.SerializeObject(categoria);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PutAsync($"/api/Categorias/{id}", content);
@@ -113,6 +133,10 @@ namespace Ecommerce.Frontend.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            var user = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
+            var servicioToken = new ServicioToken();
+            var token = await servicioToken.Autenticar(user);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.DeleteAsync($"/api/Categorias/{id}");
 
             if (response.IsSuccessStatusCode)

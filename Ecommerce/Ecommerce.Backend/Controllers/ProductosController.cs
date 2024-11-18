@@ -1,7 +1,7 @@
 ﻿using Ecommerce.Backend.Data;
 using Ecommerce.Shared.Entities;
 using Ecommerce.Shared.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +9,7 @@ namespace Ecommerce.Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductosController : ControllerBase
     {
         private readonly DataContext _context;

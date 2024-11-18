@@ -1,8 +1,6 @@
 ﻿using Ecommerce.Backend.Data;
-using Ecommerce.Backend.Migrations;
 using Ecommerce.Shared.Entities;
 using Ecommerce.Shared.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

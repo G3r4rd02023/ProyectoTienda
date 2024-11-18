@@ -4,6 +4,6 @@ namespace Ecommerce.Frontend.Services
 {
     public interface IServicioLista
     {
-        Task<IEnumerable<SelectListItem>> GetListaCategorias();
+        Task<IEnumerable<SelectListItem>> GetListaCategorias(string usuario);
     }
 }

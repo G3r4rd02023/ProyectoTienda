@@ -24,8 +24,8 @@ namespace Ecommerce.Frontend.Controllers
 
         public async Task<IActionResult> Index(string searchName, int? categoryId, int pageNumber = 1, int pageSize = 12)
         {
-            var productos = await _producto.ObtenerProductosAsync();
-            var categorias = await _producto.ObtenerCategoriasAsync();
+            var productos = await _producto.ObtenerProductosAsync(User.Identity!.Name!);
+            var categorias = await _producto.ObtenerCategoriasAsync(User.Identity.Name!);
             var usuario = await _usuario.GetUsuarioByEmail(User.Identity!.Name!);
 
             if (!string.IsNullOrWhiteSpace(searchName))
@@ -58,7 +58,7 @@ namespace Ecommerce.Frontend.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var producto = await _producto.BuscarProductoAsync(id);
+            var producto = await _producto.BuscarProductoAsync(id, User.Identity!.Name!);
             return View(producto);
         }
 
@@ -69,7 +69,7 @@ namespace Ecommerce.Frontend.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            var producto = await _producto.BuscarProductoAsync(id);
+            var producto = await _producto.BuscarProductoAsync(id, User.Identity.Name!);
             var usuario = await _usuario.GetUsuarioByEmail(User.Identity.Name!);
 
             VentaTemporal ventaTemporal = new()

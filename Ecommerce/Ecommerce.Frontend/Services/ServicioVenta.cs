@@ -37,7 +37,7 @@ namespace Ecommerce.Frontend.Services
 
             foreach (DetalleVenta detalle in venta.DetallesVenta!)
             {
-                Producto? producto = await _producto.BuscarProductoAsync(detalle.Producto!.Id);
+                Producto? producto = await _producto.BuscarProductoAsync(detalle.Producto!.Id, detalle.Venta!.Usuario!.Correo!);
                 if (producto != null)
                 {
                     producto.Stock += detalle.Cantidad;
@@ -144,11 +144,11 @@ namespace Ecommerce.Frontend.Services
                     Comentario = item.Comentario,
                 });
 
-                Producto? producto = await _producto.BuscarProductoAsync(item.Producto!.Id);
+                Producto? producto = await _producto.BuscarProductoAsync(item.Producto!.Id, item.Usuario!.Correo);
                 if (producto != null)
                 {
                     producto.Stock -= item.Cantidad;
-                    await _producto.ActualizarProductoAsync(producto);
+                    await _producto.ActualizarProductoAsync(producto, item.Usuario.Correo);
                 }
                 await EliminarVentaTemporalAsync(item);
             }
@@ -162,7 +162,7 @@ namespace Ecommerce.Frontend.Services
             Response response = new() { IsSuccess = true };
             foreach (VentaTemporal item in model.VentasTemporales!)
             {
-                Producto? producto = await _producto.BuscarProductoAsync(item.Producto!.Id);
+                Producto? producto = await _producto.BuscarProductoAsync(item.Producto!.Id, item.Usuario!.Correo);
                 if (producto == null)
                 {
                     response.IsSuccess = false;

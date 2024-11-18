@@ -6,18 +6,18 @@ namespace Ecommerce.Frontend.Services
 {
     public interface IServicioProducto
     {
-        Task<string> ObtenerCodigo();
+        Task<string> ObtenerCodigo(string usuario);
 
-        Task<IEnumerable<Producto>> ObtenerProductosAsync();
+        Task<IEnumerable<Producto>> ObtenerProductosAsync(string usuario);
 
-        Task<IEnumerable<Categoria>> ObtenerCategoriasAsync();
+        Task<IEnumerable<Categoria>> ObtenerCategoriasAsync(string usuario);
 
-        Task<ProductoDTO?> BuscarProductoAsync(int id);
+        Task<ProductoDTO?> BuscarProductoAsync(int id, string usuario);
 
-        Task<bool> ActualizarProductoAsync(Producto producto);
+        Task<bool> ActualizarProductoAsync(Producto producto, string usuario);
 
-        Task<List<ProductosViewModel>> ObtenerResumenProductos();
+        Task<List<ProductosViewModel>> ObtenerResumenProductos(string usuario);
 
-        Task<bool> GuardarProductoAsync(Producto producto);
+        Task<bool> GuardarProductoAsync(Producto producto, string usuario);
     }
 }
