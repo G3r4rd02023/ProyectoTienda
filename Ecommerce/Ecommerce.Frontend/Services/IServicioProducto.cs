@@ -17,5 +17,7 @@ namespace Ecommerce.Frontend.Services
         Task<bool> ActualizarProductoAsync(Producto producto);
 
         Task<List<ProductosViewModel>> ObtenerResumenProductos();
+
+        Task<bool> GuardarProductoAsync(Producto producto);
     }
 }

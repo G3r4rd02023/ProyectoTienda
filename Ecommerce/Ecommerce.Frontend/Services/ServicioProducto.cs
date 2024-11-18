@@ -105,5 +105,17 @@ namespace Ecommerce.Frontend.Services
             }
             return [];
         }
+
+        public async Task<bool> GuardarProductoAsync(Producto producto)
+        {
+            var json = JsonConvert.SerializeObject(producto);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("/api/Productos/", content);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

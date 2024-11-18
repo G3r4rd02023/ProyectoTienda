@@ -81,7 +81,7 @@ namespace Ecommerce.Frontend.Controllers
             var usuario = new Usuario
             {
                 Rol = Rol.Usuario,
-                Estado = "Nuevo",
+                Estado = "Cliente",
                 SesionActiva = false,
             };
             return View(usuario);

@@ -3,6 +3,7 @@
     public enum Rol
     {
         Administrador,
-        Usuario
+        Usuario,
+        Cliente
     }
 }
