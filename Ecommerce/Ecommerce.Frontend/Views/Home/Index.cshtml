@@ -16,6 +16,21 @@
             icon: 'success',
             title: '@TempData["SuccessMessage"]',
             showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    </script>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script type="text/javascript">
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: '@TempData["ErrorMessage"]',
+            showConfirmButton: false,
             timer: 5000,
             timerProgressBar: true
         });

@@ -38,7 +38,7 @@ namespace Ecommerce.Frontend.Controllers
             }
 
             int totalItems = productos.Count();
-            var pagedProductos = productos.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            var pagedProductos = productos.Skip((pageNumber - 1) * pageSize).Take(pageSize).Where(p => p.Stock > 0).ToList();
 
             HomeViewModel model = new()
             {
@@ -153,8 +153,11 @@ namespace Ecommerce.Frontend.Controllers
                 return RedirectToAction(nameof(ConfirmarVenta));
             }
 
-            ModelState.AddModelError(string.Empty, response.Message!);
-            return View(model);
+            TempData["ErrorMessage"] = response.Message;
+            return RedirectToAction(nameof(Index));
+
+            //ModelState.AddModelError(string.Empty, response.Message!);
+            //return View(model);
         }
 
         public IActionResult Privacy()

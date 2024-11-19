@@ -172,7 +172,7 @@ namespace Ecommerce.Frontend.Services
                 if (producto.Stock < item.Cantidad)
                 {
                     response.IsSuccess = false;
-                    response.Message = $"Lo sentimos no tenemos existencias suficientes del producto {item.Producto.Nombre}, para tomar su pedido. Por favor disminuir la cantidad o sustituirlo por otro.";
+                    response.Message = $"Lo sentimos no tenemos existencias suficientes del producto {item.Producto.Nombre}, Unidades disponibles: {item.Producto.Stock}";
                     return response;
                 }
             }
